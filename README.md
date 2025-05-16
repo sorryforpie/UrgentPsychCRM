@@ -9,7 +9,7 @@ UI Style:
 • Cards: Rounded corners (2xl), hover shadows, light dividers inside
 • Icons: Lucide or Feather-style line icons, clean and consistent
 
-Screens to Create:
+Screens to Create (A collapsible left sidebar will link to each page below):
 
 Dashboard Overview Screen
 Prioritize clear info hierarchy, use modular card layout. Full-width nav bar, left sidebar, and responsive grid cards.
@@ -26,10 +26,10 @@ Grid or table with minimal data preview. Use avatars, clean rows, search bar wit
 Patient Profile Page
 Focus on hierarchy and separation of metadata, activity timeline, and related items. Emphasize clean layout, mobile-first card stacks.
 
-6.1. Referral Management Centre
+Referral Management Centre
 With upload button, file preview cards, meant to have sortable sub-files (create new folder function) for sorting outpatient referrals to other specialties or clinics, button with function for apply referral to [searchable patient database] that proceeds to auto-populate a referral document (you don't need to build this functionality in yet, will be GenAI coded later)
 
-6.2. Community Resource Management Centre
+Community Resource Management Centre
 With upload button, file preview cards, and allows selection of multiple resources with a "print on page" button.
 
 Document Management Page for patients
@@ -47,7 +47,3 @@ Simpler read-only design with locked fields, visual timelines, and downloadable 
 Settings Page
 Design with grouped sections, clean toggles, permission badges, and minimal icon usage. Consistent padding and form field hierarchy.
 
-A collapsible left sidebar will link to each page above.
-
-This repository currently provides the basic project structure so development can
-start quickly.
