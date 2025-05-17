@@ -1,6 +1,7 @@
 'use client';
 import { useState } from 'react';
 import { FolderPlus, Upload } from 'lucide-react';
+import patients from '@/data/patients';
 
 interface Template {
   id: number;
@@ -20,6 +21,8 @@ export default function ReferralsPage() {
   ]);
   const [folderName, setFolderName] = useState('');
   const [nextId, setNextId] = useState(3);
+  const [patientQuery, setPatientQuery] = useState('');
+  const [selectedPatientId, setSelectedPatientId] = useState<number | null>(null);
 
   const addFolder = () => {
     if (!folderName.trim()) return;
@@ -45,9 +48,46 @@ export default function ReferralsPage() {
     );
   };
 
+  const handlePatientChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+    setPatientQuery(val);
+    const patient = patients.find(
+      (p) => p.name.toLowerCase() === val.toLowerCase(),
+    );
+    setSelectedPatientId(patient ? patient.id : null);
+  };
+
+  const handleGenerateReferral = () => {
+    if (selectedPatientId === null) return;
+    // TODO: integrate with document generation feature
+    console.log('Selected patient ID for referral:', selectedPatientId);
+  };
+
   return (
     <div className="space-y-6">
       <h1 className="text-2xl font-semibold">Referral Management</h1>
+      <div className="flex gap-2">
+        <input
+          type="text"
+          list="patient-options"
+          value={patientQuery}
+          onChange={handlePatientChange}
+          placeholder="Search patients..."
+          className="flex-1 px-3 py-2 border rounded"
+        />
+        <datalist id="patient-options">
+          {patients.map((p) => (
+            <option key={p.id} value={p.name} />
+          ))}
+        </datalist>
+        <button
+          onClick={handleGenerateReferral}
+          disabled={selectedPatientId === null}
+          className="px-4 py-2 bg-accent text-white rounded shadow disabled:opacity-50"
+        >
+          Start Referral
+        </button>
+      </div>
       <div className="flex gap-2">
         <input
           type="text"
