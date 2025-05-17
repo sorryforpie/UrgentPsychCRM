@@ -8,6 +8,10 @@ import {
   Users,
   Calendar,
   DollarSign,
+  FileText,
+  Share2,
+  BookOpen,
+  UserCheck,
   Settings as SettingsIcon,
 } from 'lucide-react';
 
@@ -15,6 +19,10 @@ const links = [
   { href: '/', label: 'Dashboard', icon: Home },
   { href: '/matters', label: 'Matters', icon: Folder },
   { href: '/patients', label: 'Patients', icon: Users },
+  { href: '/documents', label: 'Documents', icon: FileText },
+  { href: '/referrals', label: 'Referrals', icon: Share2 },
+  { href: '/resources', label: 'Resources', icon: BookOpen },
+  { href: '/portal', label: 'Patient Portal', icon: UserCheck },
   { href: '/calendar', label: 'Calendar', icon: Calendar },
   { href: '/billing', label: 'Billing', icon: DollarSign },
   { href: '/settings', label: 'Settings', icon: SettingsIcon },
