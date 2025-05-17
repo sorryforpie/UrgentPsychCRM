@@ -6,13 +6,18 @@ export interface Invoice {
   dueDate: string;
 }
 
+import { useState } from 'react';
+
 export default function InvoiceCard({ invoice }: { invoice: Invoice }) {
+  const [status, setStatus] = useState<Invoice['status']>(invoice.status);
   const statusColor =
-    invoice.status === 'Paid'
+    status === 'Paid'
       ? 'text-green-700'
-      : invoice.status === 'Pending'
+      : status === 'Pending'
       ? 'text-yellow-600'
       : 'text-red-600';
+
+  const markPaid = () => setStatus('Paid');
 
   return (
     <div className="p-4 bg-white rounded shadow flex justify-between items-center">
@@ -22,8 +27,16 @@ export default function InvoiceCard({ invoice }: { invoice: Invoice }) {
       </div>
       <div className="text-right">
         <div className="font-medium">{invoice.amount}</div>
-        <div className={`text-sm ${statusColor}`}>{invoice.status}</div>
+        <div className={`text-sm ${statusColor}`}>{status}</div>
       </div>
+      {status !== 'Paid' && (
+        <button
+          onClick={markPaid}
+          className="ml-4 px-3 py-1 text-sm rounded bg-accent text-white hover:bg-indigo-700"
+        >
+          Mark Paid
+        </button>
+      )}
     </div>
   );
 }
