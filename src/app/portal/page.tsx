@@ -1,5 +1,6 @@
 import PatientInfo from '@components/portal/PatientInfo';
 import Timeline, { TimelineEvent } from '@components/portal/Timeline';
+import Downloads, { DownloadFile } from '@components/portal/Downloads';
 
 const patientFields = [
   { label: 'Name', value: 'John Doe' },
@@ -28,6 +29,12 @@ const timeline: TimelineEvent[] = [
   },
 ];
 
+const resources: DownloadFile[] = [
+  { id: 1, name: 'Treatment Plan.pdf', progress: 100 },
+  { id: 2, name: 'Medication Guide.pdf', progress: 60 },
+  { id: 3, name: 'Exercise Tips.pdf', progress: 20 },
+];
+
 export default function PatientPortalPage() {
   return (
     <div className="space-y-6">
@@ -36,6 +43,7 @@ export default function PatientPortalPage() {
         <PatientInfo fields={patientFields} />
         <Timeline events={timeline} />
       </div>
+      <Downloads files={resources} />
     </div>
   );
 }
