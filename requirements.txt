@@ -1,1 +1,2 @@
 # No Python dependencies are required for this project
+# Feel free to change this file to add necessary dependencies for a setup script 
