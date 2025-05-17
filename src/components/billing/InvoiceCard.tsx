@@ -1,3 +1,5 @@
+'use client';
+
 export interface Invoice {
   id: number;
   patient: string;

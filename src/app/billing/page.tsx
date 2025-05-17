@@ -1,3 +1,5 @@
+'use client';
+
 import Timer from '@components/billing/Timer';
 import InvoiceCard, { Invoice } from '@components/billing/InvoiceCard';
 import { useState } from 'react';
