@@ -8,6 +8,7 @@ export interface CalendarEvent {
   date: string; // YYYY-MM-DD
   title: string;
   type?: 'default' | 'appointment' | 'task';
+  details?: string;
 }
 
 interface CalendarProps {
@@ -27,6 +28,20 @@ function formatMonthYear(date: Date) {
   return date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
 }
 
+function startOfWeek(date: Date) {
+  const d = new Date(date);
+  const diff = (d.getDay() + 6) % 7; // Monday = 0
+  d.setDate(d.getDate() - diff);
+  d.setHours(0, 0, 0, 0);
+  return d;
+}
+
+function addDays(date: Date, days: number) {
+  const d = new Date(date);
+  d.setDate(d.getDate() + days);
+  return d;
+}
+
 function getMonthDays(date: Date) {
   const first = startOfMonth(date);
   const start = new Date(first);
@@ -42,6 +57,8 @@ function getMonthDays(date: Date) {
 
 export default function Calendar({ initialDate = new Date(), events = [] }: CalendarProps) {
   const [current, setCurrent] = useState(startOfMonth(initialDate));
+  const [weekStart, setWeekStart] = useState(startOfWeek(initialDate));
+  const [expanded, setExpanded] = useState<string | null>(null);
   const days = getMonthDays(current);
 
   const eventsMap = events.reduce<Record<string, CalendarEvent[]>>((acc, ev) => {
@@ -61,24 +78,54 @@ export default function Calendar({ initialDate = new Date(), events = [] }: Cale
     }
   };
 
+  const prevWeek = () => {
+    const newStart = addDays(weekStart, -7);
+    setWeekStart(newStart);
+    setCurrent(startOfMonth(newStart));
+  };
+
+  const nextWeek = () => {
+    const newStart = addDays(weekStart, 7);
+    setWeekStart(newStart);
+    setCurrent(startOfMonth(newStart));
+  };
+
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <button
-          onClick={() => setCurrent(addMonths(current, -1))}
-          aria-label="Previous month"
-          className="p-2 rounded hover:bg-gray-200"
-        >
-          <ChevronLeft className="h-5 w-5" />
-        </button>
-        <h2 className="text-xl font-semibold">{formatMonthYear(current)}</h2>
-        <button
-          onClick={() => setCurrent(addMonths(current, 1))}
-          aria-label="Next month"
-          className="p-2 rounded hover:bg-gray-200"
-        >
-          <ChevronRight className="h-5 w-5" />
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setCurrent(addMonths(current, -1))}
+            aria-label="Previous month"
+            className="p-2 rounded hover:bg-gray-200"
+          >
+            <ChevronLeft className="h-5 w-5" />
+          </button>
+          <h2 className="text-xl font-semibold">{formatMonthYear(current)}</h2>
+          <button
+            onClick={() => setCurrent(addMonths(current, 1))}
+            aria-label="Next month"
+            className="p-2 rounded hover:bg-gray-200"
+          >
+            <ChevronRight className="h-5 w-5" />
+          </button>
+        </div>
+        <div className="flex items-center gap-1">
+          <button
+            onClick={prevWeek}
+            aria-label="Previous week"
+            className="p-1 rounded hover:bg-gray-200"
+          >
+            <ChevronLeft className="h-4 w-4" />
+          </button>
+          <button
+            onClick={nextWeek}
+            aria-label="Next week"
+            className="p-1 rounded hover:bg-gray-200"
+          >
+            <ChevronRight className="h-4 w-4" />
+          </button>
+        </div>
       </div>
       <div className="grid grid-cols-7 text-sm text-center font-medium">
         {['Mon','Tue','Wed','Thu','Fri','Sat','Sun'].map((d) => (
@@ -88,25 +135,41 @@ export default function Calendar({ initialDate = new Date(), events = [] }: Cale
       <div className="grid grid-cols-7 gap-px bg-gray-200 rounded">
         {days.map((day) => {
           const isCurrent = day.getMonth() === current.getMonth();
-          const dateKey = day.toISOString().slice(0,10);
+          const dateKey = day.toISOString().slice(0, 10);
           const dayEvents = eventsMap[dateKey] || [];
+          const inWeek =
+            day >= weekStart && day < addDays(weekStart, 7);
           return (
             <div
               key={dateKey}
               className={`h-24 p-1 bg-white flex flex-col text-xs rounded-sm ${
                 isCurrent ? '' : 'text-gray-400'
-              }`}
+              } ${inWeek ? 'bg-indigo-50' : ''}`}
             >
               <div className="self-end text-xs font-medium">{day.getDate()}</div>
               <div className="space-y-0.5 overflow-hidden">
-                {dayEvents.map((ev, idx) => (
-                  <span
-                    key={idx}
-                    className={`block truncate text-white px-1 rounded ${badgeColor(ev.type)}`}
-                  >
-                    {ev.title}
-                  </span>
-                ))}
+                {dayEvents.map((ev, idx) => {
+                  const id = `${ev.date}-${idx}`;
+                  return (
+                    <div key={id} className="space-y-1">
+                      <button
+                        onClick={() =>
+                          setExpanded(expanded === id ? null : id)
+                        }
+                        className={`w-full text-left truncate text-white px-1 rounded ${badgeColor(
+                          ev.type
+                        )}`}
+                      >
+                        {ev.title}
+                      </button>
+                      {expanded === id && ev.details && (
+                        <div className="text-gray-700 text-[10px] bg-gray-100 p-1 rounded">
+                          {ev.details}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
             </div>
           );
