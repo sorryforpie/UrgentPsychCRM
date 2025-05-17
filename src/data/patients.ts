@@ -9,6 +9,8 @@ export interface Patient {
   email: string;
   phone: string;
   avatar: string;
+  status: 'Active' | 'Inactive';
+  lastVisit: string;
   timeline: TimelineEvent[];
 }
 
@@ -19,6 +21,8 @@ const patients: Patient[] = [
     email: 'john@example.com',
     phone: '555-0101',
     avatar: 'https://i.pravatar.cc/150?img=11',
+    status: 'Active',
+    lastVisit: '2024-05-15',
     timeline: [
       { date: '2024-05-01', description: 'Initial consultation' },
       { date: '2024-05-15', description: 'Follow-up visit' },
@@ -30,6 +34,8 @@ const patients: Patient[] = [
     email: 'jane@example.com',
     phone: '555-0102',
     avatar: 'https://i.pravatar.cc/150?img=12',
+    status: 'Active',
+    lastVisit: '2024-05-22',
     timeline: [
       { date: '2024-04-20', description: 'Medication review' },
       { date: '2024-05-22', description: 'Therapy session' },
@@ -41,6 +47,8 @@ const patients: Patient[] = [
     email: 'alex@example.com',
     phone: '555-0103',
     avatar: 'https://i.pravatar.cc/150?img=13',
+    status: 'Inactive',
+    lastVisit: '2024-04-01',
     timeline: [
       { date: '2024-03-05', description: 'Referral received' },
       { date: '2024-04-01', description: 'First appointment' },
@@ -52,6 +60,8 @@ const patients: Patient[] = [
     email: 'maria@example.com',
     phone: '555-0104',
     avatar: 'https://i.pravatar.cc/150?img=14',
+    status: 'Active',
+    lastVisit: '2024-03-12',
     timeline: [
       { date: '2024-02-10', description: 'Emergency visit' },
       { date: '2024-03-12', description: 'Stabilization follow-up' },
@@ -63,6 +73,8 @@ const patients: Patient[] = [
     email: 'li@example.com',
     phone: '555-0105',
     avatar: 'https://i.pravatar.cc/150?img=15',
+    status: 'Inactive',
+    lastVisit: '2024-02-27',
     timeline: [
       { date: '2024-01-30', description: 'Routine check-up' },
       { date: '2024-02-27', description: 'Therapy session' },
