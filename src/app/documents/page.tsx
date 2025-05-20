@@ -20,6 +20,7 @@ const initialFolders: Folder[] = [
 export default function DocumentsPage() {
   const [documents, setDocuments] = useState<DocumentFile[]>(initialDocs);
   const [folders, setFolders] = useState<Folder[]>(initialFolders);
+  const [newFolderName, setNewFolderName] = useState('');
   const [dragId, setDragId] = useState<number | null>(null);
 
   const handleUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -35,6 +36,24 @@ export default function DocumentsPage() {
   };
 
   const handleDragStart = (id: number) => setDragId(id);
+
+  const createFolder = () => {
+    const name = newFolderName.trim();
+    if (name === '') return;
+    const newFolder: Folder = { id: Date.now(), name, docs: [] };
+    setFolders((prev) => [...prev, newFolder]);
+    setNewFolderName('');
+  };
+
+  const deleteFolder = (id: number) => {
+    setFolders((fs) => {
+      const folder = fs.find((f) => f.id === id);
+      if (folder) {
+        setDocuments((docs) => [...docs, ...folder.docs]);
+      }
+      return fs.filter((f) => f.id !== id);
+    });
+  };
 
   const handleDrop = (folderId: number) => {
     if (dragId === null) return;
@@ -74,12 +93,29 @@ export default function DocumentsPage() {
         </div>
         <div>
           <h2 className="font-medium mb-2">Folders</h2>
+          <div className="flex gap-2 mb-4">
+            <input
+              type="text"
+              value={newFolderName}
+              onChange={(e) => setNewFolderName(e.target.value)}
+              placeholder="New folder name"
+              className="flex-1 p-2 border rounded"
+            />
+            <button
+              type="button"
+              onClick={createFolder}
+              className="px-3 py-2 rounded bg-accent text-white hover:bg-indigo-700"
+            >
+              Add
+            </button>
+          </div>
           <div className="space-y-4">
             {folders.map((folder) => (
               <FolderCard
                 key={folder.id}
                 folder={folder}
                 onDrop={handleDrop}
+                onDelete={deleteFolder}
               />
             ))}
           </div>
