@@ -54,6 +54,13 @@ export default function PatientsPage() {
             </tr>
           </thead>
           <tbody>
+            {filtered.length === 0 && (
+              <tr>
+                <td colSpan={5} className="p-3 text-center">
+                  No patients found
+                </td>
+              </tr>
+            )}
             {filtered.map((p) => (
               <tr key={p.id} className="border-t hover:bg-gray-50">
                 <td className="p-3 flex items-center gap-3">
