@@ -1,4 +1,4 @@
-import { Folder as FolderIcon } from 'lucide-react';
+import { Folder as FolderIcon, Trash } from 'lucide-react';
 import { DocumentFile } from './DocumentItem';
 
 export interface Folder {
@@ -10,9 +10,11 @@ export interface Folder {
 export default function FolderCard({
   folder,
   onDrop,
+  onDelete,
 }: {
   folder: Folder;
   onDrop: (folderId: number) => void;
+  onDelete?: (folderId: number) => void;
 }) {
   const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -29,7 +31,18 @@ export default function FolderCard({
           <FolderIcon className="h-5 w-5 text-accent" />
           <span className="font-medium">{folder.name}</span>
         </div>
-        <span className="text-sm text-gray-500">{folder.docs.length} docs</span>
+        <div className="flex items-center gap-2">
+          <span className="text-sm text-gray-500">{folder.docs.length} docs</span>
+          {onDelete && (
+            <button
+              onClick={() => onDelete(folder.id)}
+              aria-label="Delete folder"
+              className="p-1 rounded hover:bg-red-100"
+            >
+              <Trash className="h-4 w-4 text-red-600" />
+            </button>
+          )}
+        </div>
       </div>
       {folder.docs.length > 0 && (
         <ul className="text-sm space-y-1">
