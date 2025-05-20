@@ -46,6 +46,11 @@ export default function ResourcesPage() {
     }
   };
 
+  const handleDelete = (id: number) => {
+    setResources((prev) => prev.filter((r) => r.id !== id));
+    setSelected((prev) => prev.filter((i) => i !== id));
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -81,12 +86,20 @@ export default function ResourcesPage() {
                 />
                 <span>{res.name}</span>
               </div>
-              <button
-                onClick={() => handlePrint(res)}
-                className="flex items-center gap-1 text-accent hover:underline"
-              >
-                <Printer className="h-4 w-4" /> Print
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => handlePrint(res)}
+                  className="flex items-center gap-1 text-accent hover:underline"
+                >
+                  <Printer className="h-4 w-4" /> Print
+                </button>
+                <button
+                  onClick={() => handleDelete(res.id)}
+                  className="flex items-center gap-1 text-red-600 hover:underline"
+                >
+                  Delete
+                </button>
+              </div>
             </li>
           ))}
         </ul>
