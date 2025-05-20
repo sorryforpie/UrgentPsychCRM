@@ -1,5 +1,6 @@
 import { ReactNode } from 'react';
 import Sidebar from './Sidebar';
+import AnimatedMain from './AnimatedMain';
 
 interface LayoutProps {
   children: ReactNode;
@@ -17,7 +18,7 @@ export default function Layout({ children, title }: LayoutProps) {
       </header>
       <div className="flex flex-1">
         <Sidebar />
-        <main className="flex-1 p-6 bg-background">{children}</main>
+        <AnimatedMain>{children}</AnimatedMain>
       </div>
     </div>
   );

@@ -12,6 +12,15 @@ const config: Config = {
       fontFamily: {
         sans: ['var(--font-inter)', 'Inter', 'sans-serif'],
       },
+      keyframes: {
+        'fade-in': {
+          from: { opacity: '0' },
+          to: { opacity: '1' },
+        },
+      },
+      animation: {
+        'fade-in': 'fade-in 0.3s ease-in',
+      },
     },
   },
   plugins: [],
