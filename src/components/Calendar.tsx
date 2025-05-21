@@ -16,6 +16,7 @@ export interface CalendarEvent {
 interface CalendarProps {
   initialDate?: Date;
   events?: CalendarEvent[];
+  onEventEdit?: (ev: CalendarEvent, index: number) => void;
 }
 
 function startOfMonth(date: Date) {
@@ -57,15 +58,15 @@ function getMonthDays(date: Date) {
   return days;
 }
 
-export default function Calendar({ initialDate = new Date(), events = [] }: CalendarProps) {
+export default function Calendar({ initialDate = new Date(), events = [], onEventEdit }: CalendarProps) {
   const [current, setCurrent] = useState(startOfMonth(initialDate));
   const [weekStart, setWeekStart] = useState(startOfWeek(initialDate));
   const [expanded, setExpanded] = useState<string | null>(null);
   const days = getMonthDays(current);
 
-  const eventsMap = events.reduce<Record<string, CalendarEvent[]>>((acc, ev) => {
+  const eventsMap = events.reduce<Record<string, { event: CalendarEvent; index: number }[]>>((acc, ev, idx) => {
     if (!acc[ev.date]) acc[ev.date] = [];
-    acc[ev.date].push(ev);
+    acc[ev.date].push({ event: ev, index: idx });
     return acc;
   }, {});
 
@@ -150,8 +151,8 @@ export default function Calendar({ initialDate = new Date(), events = [] }: Cale
             >
               <div className="self-end text-xs font-medium">{day.getDate()}</div>
               <div className="space-y-0.5 overflow-hidden">
-                {dayEvents.map((ev, idx) => {
-                  const id = `${ev.date}-${idx}`;
+                {dayEvents.map(({ event: ev, index }) => {
+                  const id = `${ev.date}-${index}`;
                   return (
                     <div key={id} className="space-y-1">
                       <button
@@ -164,9 +165,17 @@ export default function Calendar({ initialDate = new Date(), events = [] }: Cale
                       >
                         {ev.title}
                       </button>
-                      {expanded === id && ev.details && (
-                        <div className="text-gray-700 text-[10px] bg-gray-100 p-1 rounded">
-                          {ev.details}
+                      {expanded === id && (
+                        <div className="text-gray-700 text-[10px] bg-gray-100 p-1 rounded space-y-1">
+                          {ev.details && <div>{ev.details}</div>}
+                          {onEventEdit && (
+                            <button
+                              onClick={() => onEventEdit(ev, index)}
+                              className="px-1 py-0.5 text-[10px] rounded bg-accent text-white"
+                            >
+                              Edit
+                            </button>
+                          )}
                         </div>
                       )}
                     </div>
