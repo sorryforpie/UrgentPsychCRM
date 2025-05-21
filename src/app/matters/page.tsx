@@ -64,7 +64,15 @@ export default function MattersPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-semibold">Matters</h1>
+      <div className="flex items-center justify-between">
+        <h1 className="text-2xl font-semibold">Matters</h1>
+        <Link
+          href="/matters/new"
+          className="px-3 py-2 rounded bg-accent text-white hover:bg-indigo-700"
+        >
+          New Matter
+        </Link>
+      </div>
       <div className="flex flex-col md:flex-row md:items-center md:space-x-4 space-y-2 md:space-y-0">
         <input
           type="text"
