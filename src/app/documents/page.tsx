@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import { Upload } from 'lucide-react';
 import DocumentItem, { DocumentFile } from '@components/documents/DocumentItem';
 import FolderCard, { Folder } from '@components/documents/FolderCard';
@@ -73,10 +74,18 @@ export default function DocumentsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-semibold">Documents</h1>
-        <label className="cursor-pointer px-4 py-2 rounded bg-accent text-white hover:bg-indigo-700 flex items-center gap-2">
-          <Upload className="h-4 w-4" /> Upload
-          <input type="file" className="hidden" onChange={handleUpload} />
-        </label>
+        <div className="flex gap-2">
+          <label className="cursor-pointer px-4 py-2 rounded bg-accent text-white hover:bg-indigo-700 flex items-center gap-2">
+            <Upload className="h-4 w-4" /> Quick Upload
+            <input type="file" className="hidden" onChange={handleUpload} />
+          </label>
+          <Link
+            href="/documents/upload"
+            className="px-4 py-2 rounded bg-accent text-white hover:bg-indigo-700"
+          >
+            Upload Form
+          </Link>
+        </div>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>

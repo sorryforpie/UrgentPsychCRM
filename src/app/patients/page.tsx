@@ -17,7 +17,15 @@ export default function PatientsPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-semibold">Patient Directory</h1>
+      <div className="flex items-center justify-between">
+        <h1 className="text-2xl font-semibold">Patient Directory</h1>
+        <Link
+          href="/patients/new"
+          className="px-3 py-2 rounded bg-accent text-white hover:bg-indigo-700"
+        >
+          New Patient
+        </Link>
+      </div>
       <div className="flex flex-col md:flex-row md:items-end gap-4">
         <input
           type="text"
