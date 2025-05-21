@@ -1,8 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import patients from '@/data/patients';
+
+interface Patient {
+  id: number;
+  name: string;
+}
 
 interface FormState {
   title: string;
@@ -14,6 +18,7 @@ interface FormState {
 
 export default function NewMatterPage() {
   const router = useRouter();
+  const [patients, setPatients] = useState<Patient[]>([]);
   const [form, setForm] = useState<FormState>({
     title: '',
     patient: '',
@@ -22,6 +27,13 @@ export default function NewMatterPage() {
     description: ''
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    fetch('/api/patients')
+      .then((res) => res.json())
+      .then((data) => setPatients(data))
+      .catch(() => setPatients([]));
+  }, []);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>

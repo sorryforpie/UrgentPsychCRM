@@ -1,5 +1,14 @@
-import patients from '@/data/patients';
-import { sampleMatters } from '@/data/sampleMatters';
+interface Patient {
+  id: number;
+  name: string;
+  phone: string;
+}
+
+interface Matter {
+  id: number;
+  title: string;
+  status: string;
+}
 
 const appointments = [
   { id: 1, patient: 'John Doe', time: 'Jun 14, 10:00 AM' },
@@ -7,9 +16,15 @@ const appointments = [
   { id: 3, patient: 'Alex Johnson', time: 'Jun 18, 9:30 AM' },
 ];
 
-export default function Home() {
-  const newPatients = patients.slice(0, 3);
-  const recentMatters = sampleMatters.slice(0, 3);
+export default async function Home() {
+  const [patientsRes, mattersRes] = await Promise.all([
+    fetch(`${process.env.NEXT_PUBLIC_BASE_URL ?? ''}/api/patients`, { cache: 'no-store' }),
+    fetch(`${process.env.NEXT_PUBLIC_BASE_URL ?? ''}/api/matters`, { cache: 'no-store' })
+  ])
+  const patients: Patient[] = patientsRes.ok ? await patientsRes.json() : []
+  const matters: Matter[] = mattersRes.ok ? await mattersRes.json() : []
+  const newPatients = patients.slice(0, 3)
+  const recentMatters = matters.slice(0, 3)
 
   return (
     <div className="space-y-6">

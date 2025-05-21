@@ -1,13 +1,36 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import patients from '@/data/patients';
+
+interface TimelineEvent {
+  date: string;
+  description: string;
+}
+
+interface Patient {
+  id: number;
+  name: string;
+  email: string;
+  phone: string;
+  avatar: string;
+  status: 'Active' | 'Inactive';
+  lastVisit: string;
+  timeline: TimelineEvent[];
+}
 
 export default function PatientsPage() {
+  const [patients, setPatients] = useState<Patient[]>([]);
   const [query, setQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [afterFilter, setAfterFilter] = useState('');
+
+  useEffect(() => {
+    fetch('/api/patients')
+      .then((res) => res.json())
+      .then((data) => setPatients(data))
+      .catch(() => setPatients([]));
+  }, []);
 
   const filtered = patients.filter((p) =>
     p.name.toLowerCase().includes(query.toLowerCase()) &&
