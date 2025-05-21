@@ -47,3 +47,23 @@ Simpler read-only design with locked fields, visual timelines, and downloadable 
 Settings Page
 Design with grouped sections, clean toggles, permission badges, and minimal icon usage. Consistent padding and form field hierarchy.
 
+## Development
+
+This project uses Prisma with a local SQLite database.
+
+### Setup
+
+1. Install dependencies:
+
+   ```bash
+   npm install
+   ```
+
+2. Run the initial migration to create the database and Prisma client:
+
+   ```bash
+   npx prisma migrate dev --name init
+   ```
+
+The SQLite file is located in `prisma/dev.db` and is ignored from git.
+

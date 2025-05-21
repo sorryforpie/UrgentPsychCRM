@@ -1,7 +1,11 @@
 'use client';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FolderPlus, Upload } from 'lucide-react';
-import patients from '@/data/patients';
+
+interface Patient {
+  id: number;
+  name: string;
+}
 
 interface Template {
   id: number;
@@ -23,6 +27,13 @@ export default function ReferralsPage() {
   const [nextId, setNextId] = useState(3);
   const [patientQuery, setPatientQuery] = useState('');
   const [selectedPatientId, setSelectedPatientId] = useState<number | null>(null);
+  const [patients, setPatients] = useState<Patient[]>([]);
+
+  useEffect(() => {
+    fetch('/api/patients')
+      .then((res) => res.json())
+      .then((data) => setPatients(data));
+  }, []);
 
   const addFolder = () => {
     if (!folderName.trim()) return;

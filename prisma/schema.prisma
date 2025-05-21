@@ -1,0 +1,40 @@
+// Prisma schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model Patient {
+  id        Int            @id @default(autoincrement())
+  name      String
+  email     String
+  phone     String
+  avatar    String
+  status    String
+  lastVisit DateTime
+  timeline  TimelineEvent[]
+  matters   Matter[]
+}
+
+model TimelineEvent {
+  id        Int      @id @default(autoincrement())
+  date      DateTime
+  description String
+  patient   Patient @relation(fields: [patientId], references: [id])
+  patientId Int
+}
+
+model Matter {
+  id          Int      @id @default(autoincrement())
+  title       String
+  patient     Patient  @relation(fields: [patientId], references: [id])
+  patientId   Int
+  status      String
+  created     DateTime
+  description String
+}

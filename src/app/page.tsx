@@ -1,5 +1,4 @@
-import patients from '@/data/patients';
-import { sampleMatters } from '@/data/sampleMatters';
+import prisma from '@/lib/prisma';
 
 const appointments = [
   { id: 1, patient: 'John Doe', time: 'Jun 14, 10:00 AM' },
@@ -7,9 +6,9 @@ const appointments = [
   { id: 3, patient: 'Alex Johnson', time: 'Jun 18, 9:30 AM' },
 ];
 
-export default function Home() {
-  const newPatients = patients.slice(0, 3);
-  const recentMatters = sampleMatters.slice(0, 3);
+export default async function Home() {
+  const newPatients = await prisma.patient.findMany({ take: 3, orderBy: { id: 'desc' } });
+  const recentMatters = await prisma.matter.findMany({ take: 3, orderBy: { id: 'desc' } });
 
   return (
     <div className="space-y-6">

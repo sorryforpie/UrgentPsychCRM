@@ -1,14 +1,29 @@
 'use client';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { sampleMatters, Matter } from '@/data/sampleMatters';
+
+interface Matter {
+  id: number;
+  title: string;
+  patientId: number;
+  patient: { name: string } | null;
+  status: string;
+  created: string;
+  description: string;
+}
 
 export default function MattersPage() {
   const [query, setQuery] = useState('');
-  const [matters, setMatters] = useState<Matter[]>(sampleMatters);
+  const [matters, setMatters] = useState<Matter[]>([]);
   const [selected, setSelected] = useState<string[]>([]);
   const [sortKey, setSortKey] = useState<keyof Matter>('created');
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('asc');
+
+  useEffect(() => {
+    fetch('/api/matters')
+      .then((res) => res.json())
+      .then((data) => setMatters(data));
+  }, []);
 
   const toggleSort = (key: keyof Matter) => {
     if (sortKey === key) {
@@ -23,7 +38,7 @@ export default function MattersPage() {
     .filter(
       (m) =>
         m.title.toLowerCase().includes(query.toLowerCase()) ||
-        m.patient.toLowerCase().includes(query.toLowerCase())
+        (m.patient?.name.toLowerCase() ?? '').includes(query.toLowerCase())
     )
     .sort((a, b) => {
       const valA = a[sortKey];
@@ -145,7 +160,7 @@ export default function MattersPage() {
                     {m.title}
                   </Link>
                 </td>
-                <td className="px-4 py-2">{m.patient}</td>
+                <td className="px-4 py-2">{m.patient?.name}</td>
                 <td className="px-4 py-2">{m.status}</td>
                 <td className="px-4 py-2">{m.created}</td>
               </tr>

@@ -1,12 +1,15 @@
 import { notFound } from 'next/navigation';
-import patients from '@/data/patients';
+import prisma from '@/lib/prisma';
 
 interface Params {
   params: { id: string };
 }
 
-export default function PatientProfile({ params }: Params) {
-  const patient = patients.find((p) => p.id === Number(params.id));
+export default async function PatientProfile({ params }: Params) {
+  const patient = await prisma.patient.findUnique({
+    where: { id: Number(params.id) },
+    include: { timeline: true },
+  });
 
   if (!patient) {
     notFound();

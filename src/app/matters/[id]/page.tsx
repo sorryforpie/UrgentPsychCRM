@@ -1,18 +1,22 @@
 'use client';
-import { useState } from 'react';
-import { notFound } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { getMatter } from '@/data/sampleMatters';
 
 interface Params {
   params: { id: string };
 }
 
 export default function MatterDetail({ params }: Params) {
-  const matter = getMatter(params.id);
+  const [matter, setMatter] = useState<any | null>(null);
   const [tab, setTab] = useState<'overview' | 'documents' | 'billing'>('overview');
 
-  if (!matter) return notFound();
+  useEffect(() => {
+    fetch(`/api/matters/${params.id}`)
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => setMatter(data));
+  }, [params.id]);
+
+  if (!matter) return <p>Loading...</p>;
 
   return (
     <div className="flex flex-col md:flex-row h-full gap-6">
@@ -20,7 +24,7 @@ export default function MatterDetail({ params }: Params) {
       <aside className="md:w-64 shrink-0 space-y-4 bg-white rounded shadow p-4 overflow-y-auto">
         <h1 className="text-xl font-semibold">{matter.title}</h1>
         <div>
-          <strong>Patient:</strong> {matter.patient}
+          <strong>Patient:</strong> {matter.patient?.name}
         </div>
         <div>
           <strong>Status:</strong> {matter.status}
