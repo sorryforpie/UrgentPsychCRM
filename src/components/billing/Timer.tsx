@@ -2,7 +2,10 @@
 
 import { useState, useEffect } from 'react';
 
-export default function Timer() {
+interface TimerProps {
+  onStop?: (seconds: number) => void;
+}
+export default function Timer({ onStop }: TimerProps) {
   const [seconds, setSeconds] = useState(0);
   const [running, setRunning] = useState(false);
 
@@ -12,7 +15,15 @@ export default function Timer() {
     return () => clearInterval(id);
   }, [running]);
 
-  const toggle = () => setRunning(!running);
+  const toggle = () => {
+    if (running) {
+      setRunning(false);
+      onStop?.(seconds);
+      setSeconds(0);
+    } else {
+      setRunning(true);
+    }
+  };
   const reset = () => {
     setSeconds(0);
     setRunning(false);
