@@ -1,18 +1,35 @@
 'use client';
 import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import { getMatter } from '@/data/sampleMatters';
 
 interface Params {
   params: { id: string };
 }
 
+interface Matter {
+  id: number;
+  title: string;
+  patient: string;
+  status: 'Open' | 'Closed' | 'Archived';
+  created: string;
+  description: string;
+}
+
 export default function MatterDetail({ params }: Params) {
-  const matter = getMatter(params.id);
+  const [matter, setMatter] = useState<Matter | null>(null);
   const [tab, setTab] = useState<'overview' | 'documents' | 'billing'>('overview');
 
-  if (!matter) return notFound();
+  useEffect(() => {
+    fetch(`/api/matters/${params.id}`)
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (!data) return notFound();
+        setMatter(data);
+      });
+  }, [params.id]);
+  if (!matter) return null;
 
   return (
     <div className="flex flex-col md:flex-row h-full gap-6">

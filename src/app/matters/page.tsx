@@ -1,14 +1,29 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { sampleMatters, Matter } from '@/data/sampleMatters';
+
+interface Matter {
+  id: number;
+  title: string;
+  patient: string;
+  status: 'Open' | 'Closed' | 'Archived';
+  created: string;
+  description: string;
+}
 
 export default function MattersPage() {
   const [query, setQuery] = useState('');
-  const [matters, setMatters] = useState<Matter[]>(sampleMatters);
+  const [matters, setMatters] = useState<Matter[]>([]);
   const [selected, setSelected] = useState<string[]>([]);
   const [sortKey, setSortKey] = useState<keyof Matter>('created');
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('asc');
+
+  useEffect(() => {
+    fetch('/api/matters')
+      .then((res) => res.json())
+      .then((data) => setMatters(data))
+      .catch(() => setMatters([]))
+  }, [])
 
   const toggleSort = (key: keyof Matter) => {
     if (sortKey === key) {
