@@ -1,11 +1,12 @@
 'use client';
 import { useState } from 'react';
-import { FolderPlus, Upload } from 'lucide-react';
+import { FolderPlus, Upload, Eye, Trash2, Pencil } from 'lucide-react';
 import patients from '@/data/patients';
 
 interface Template {
   id: number;
   name: string;
+  url: string;
 }
 
 interface Folder {
@@ -33,6 +34,8 @@ export default function ReferralsPage() {
 
   const uploadTemplate = (folderId: number, files: FileList | null) => {
     if (!files || files.length === 0) return;
+    const file = files[0];
+    const url = URL.createObjectURL(file);
     setFolders((prev) =>
       prev.map((folder) =>
         folder.id === folderId
@@ -40,12 +43,34 @@ export default function ReferralsPage() {
               ...folder,
               templates: [
                 ...folder.templates,
-                { id: Date.now(), name: files[0].name },
+                { id: Date.now(), name: file.name, url },
               ],
             }
           : folder,
       ),
     );
+  };
+
+  const previewTemplate = (template: Template) => {
+    const w = window.open('', '_blank');
+    if (w) {
+      w.document.write(
+        `<embed src="${template.url}" type="application/pdf" width="100%" height="100%" />`,
+      );
+      w.document.close();
+    }
+  };
+
+  const renameFolder = (id: number) => {
+    const name = prompt('Folder name');
+    if (!name) return;
+    setFolders((prev) =>
+      prev.map((f) => (f.id === id ? { ...f, name } : f)),
+    );
+  };
+
+  const deleteFolder = (id: number) => {
+    setFolders((prev) => prev.filter((f) => f.id !== id));
   };
 
   const handlePatientChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -107,7 +132,15 @@ export default function ReferralsPage() {
         {folders.map((folder) => (
           <div key={folder.id} className="p-4 bg-white rounded shadow space-y-3">
             <div className="flex justify-between items-center">
-              <h2 className="font-medium">{folder.name}</h2>
+              <h2 className="font-medium flex items-center gap-2">
+                {folder.name}
+                <button onClick={() => renameFolder(folder.id)} className="text-gray-500 hover:text-accent">
+                  <Pencil className="h-4 w-4" />
+                </button>
+                <button onClick={() => deleteFolder(folder.id)} className="text-gray-500 hover:text-red-600">
+                  <Trash2 className="h-4 w-4" />
+                </button>
+              </h2>
               <label className="cursor-pointer px-2 py-1 bg-accent text-white text-sm rounded flex items-center gap-1">
                 <Upload className="h-4 w-4" /> Upload
                 <input
@@ -122,7 +155,12 @@ export default function ReferralsPage() {
                 <li className="text-gray-400">No templates</li>
               )}
               {folder.templates.map((t) => (
-                <li key={t.id}>{t.name}</li>
+                <li key={t.id} className="flex items-center justify-between">
+                  <span>{t.name}</span>
+                  <button onClick={() => previewTemplate(t)} className="text-accent hover:underline flex items-center gap-1 text-sm">
+                    <Eye className="h-4 w-4" /> Preview
+                  </button>
+                </li>
               ))}
             </ul>
           </div>

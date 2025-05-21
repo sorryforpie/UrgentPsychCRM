@@ -1,11 +1,12 @@
 "use client";
 
 import { useState } from 'react';
-import { Upload, Printer } from 'lucide-react';
+import { Upload, Printer, Eye } from 'lucide-react';
 
 interface Resource {
   id: number;
   name: string;
+  url: string;
 }
 
 export default function ResourcesPage() {
@@ -15,7 +16,11 @@ export default function ResourcesPage() {
   const handleUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      setResources((prev) => [...prev, { id: Date.now(), name: file.name }]);
+      const url = URL.createObjectURL(file);
+      setResources((prev) => [
+        ...prev,
+        { id: Date.now(), name: file.name, url },
+      ]);
       e.target.value = '';
     }
   };
@@ -31,7 +36,14 @@ export default function ResourcesPage() {
     if (items.length === 0) return;
     const w = window.open('', '_blank');
     if (w) {
-      w.document.write(items.map((i) => `<pre>${i.name}</pre>`).join(''));
+      w.document.write(
+        items
+          .map(
+            (i) =>
+              `<embed src="${i.url}" type="application/pdf" width="100%" height="100%" />`,
+          )
+          .join(''),
+      );
       w.document.close();
       w.print();
     }
@@ -40,9 +52,21 @@ export default function ResourcesPage() {
   const handlePrint = (resource: Resource) => {
     const w = window.open('', '_blank');
     if (w) {
-      w.document.write(`<pre>${resource.name}</pre>`);
+      w.document.write(
+        `<embed src="${resource.url}" type="application/pdf" width="100%" height="100%" />`,
+      );
       w.document.close();
       w.print();
+    }
+  };
+
+  const previewResource = (resource: Resource) => {
+    const w = window.open('', '_blank');
+    if (w) {
+      w.document.write(
+        `<embed src="${resource.url}" type="application/pdf" width="100%" height="100%" />`,
+      );
+      w.document.close();
     }
   };
 
@@ -61,7 +85,7 @@ export default function ResourcesPage() {
             disabled={selected.length === 0}
             className="flex items-center gap-1 px-4 py-2 rounded bg-accent text-white hover:bg-indigo-700 disabled:opacity-50"
           >
-            <Printer className="h-4 w-4" /> Print selected
+            <Printer className="h-4 w-4" /> Export PDF
           </button>
           <label className="cursor-pointer px-4 py-2 rounded bg-accent text-white hover:bg-indigo-700 flex items-center gap-2">
             <Upload className="h-4 w-4" /> Upload
@@ -88,14 +112,20 @@ export default function ResourcesPage() {
               </div>
               <div className="flex items-center gap-2">
                 <button
-                  onClick={() => handlePrint(res)}
-                  className="flex items-center gap-1 text-accent hover:underline"
+                  onClick={() => previewResource(res)}
+                  className="flex items-center gap-1 text-accent hover:underline text-sm"
                 >
-                  <Printer className="h-4 w-4" /> Print
+                  <Eye className="h-4 w-4" /> Preview
+                </button>
+                <button
+                  onClick={() => handlePrint(res)}
+                  className="flex items-center gap-1 text-accent hover:underline text-sm"
+                >
+                  <Printer className="h-4 w-4" /> Export
                 </button>
                 <button
                   onClick={() => handleDelete(res.id)}
-                  className="flex items-center gap-1 text-red-600 hover:underline"
+                  className="flex items-center gap-1 text-red-600 hover:underline text-sm"
                 >
                   Delete
                 </button>
